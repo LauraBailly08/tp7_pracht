@@ -43,21 +43,23 @@ const { title = "TP Plot Astro" } = Astro.props;
               </li>
 
               <!-- Dropdown 1 : Manchots -->
-              <li class="dropdown dropdown-hover">
-                <div tabindex="0" role="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1">
+              <li class="relative group">
+                <button type="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1 cursor-pointer">
                   <span>🐧 Manchots</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div class="absolute left-0 top-full pt-1.5 hidden group-hover:block group-focus-within:block z-50">
+                  <div class="p-2 shadow-xl bg-white/98 backdrop-blur-md border border-sky-100 rounded-2xl w-60 space-y-1 text-slate-700">
+                    <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2 py-1">Routes Statiques & Onglets</div>
+                    <a href="/penguins" class="block text-xs font-medium px-3 py-1.5 hover:bg-sky-50 hover:text-sky-800 rounded-lg transition">📑 Onglets par Espèce</a>
+                    <a href="/penguins/specie" class="block text-xs font-medium px-3 py-1.5 hover:bg-sky-50 hover:text-sky-800 rounded-lg transition">🧬 Par Espèce (SSG)</a>
+                    <a href="/penguins/island" class="block text-xs font-medium px-3 py-1.5 hover:bg-sky-50 hover:text-sky-800 rounded-lg transition">🏝️ Par Île (SSG)</a>
+                    <a href="/penguins/sex" class="block text-xs font-medium px-3 py-1.5 hover:bg-sky-50 hover:text-sky-800 rounded-lg transition">⚧️ Par Sexe (SSG)</a>
+                    <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2 pt-2 pb-1 border-t border-slate-100">Filtres Client</div>
+                    <a href="/penguin-filtre" class="block text-xs font-medium px-3 py-1.5 hover:bg-rose-50 hover:text-rose-800 rounded-lg transition">🔍 1 Filtre Espèce</a>
+                    <a href="/penguin-multi-filtres" class="block text-xs font-medium px-3 py-1.5 hover:bg-rose-50 hover:text-rose-800 rounded-lg transition">🎛️ Multi-Filtres & Séries</a>
+                  </div>
                 </div>
-                <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md border border-sky-100 rounded-2xl w-60 z-50 space-y-1">
-                  <li class="menu-title text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2">Routes Statiques & Onglets</li>
-                  <li><a href="/penguins" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">📑 Onglets par Espèce</a></li>
-                  <li><a href="/penguins/specie" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">🧬 Par Espèce (SSG)</a></li>
-                  <li><a href="/penguins/island" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">🏝️ Par Île (SSG)</a></li>
-                  <li><a href="/penguins/sex" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">⚧️ Par Sexe (SSG)</a></li>
-                  <li class="menu-title text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2 pt-2 border-t border-slate-100">Filtres Client</li>
-                  <li><a href="/penguin-filtre" class="text-xs font-medium py-1.5 hover:bg-rose-50 rounded-lg">🔍 1 Filtre Espèce</a></li>
-                  <li><a href="/penguin-multi-filtres" class="text-xs font-medium py-1.5 hover:bg-rose-50 rounded-lg">🎛️ Multi-Filtres & Séries</a></li>
-                </ul>
               </li>
 
               <!-- Dropdown 2 : Voitures -->
@@ -68,54 +70,62 @@ const { title = "TP Plot Astro" } = Astro.props;
               </li>
 
               <!-- Dropdown 3 : Chaises -->
-              <li class="dropdown dropdown-hover">
-                <div tabindex="0" role="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1">
+              <li class="relative group">
+                <button type="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1 cursor-pointer">
                   <span>🪑 Chaises</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div class="absolute left-0 top-full pt-1.5 hidden group-hover:block group-focus-within:block z-50">
+                  <div class="p-2 shadow-xl bg-white/98 backdrop-blur-md border border-sky-100 rounded-2xl w-56 space-y-1 text-slate-700">
+                    <a href="/chaises/category" class="block text-xs font-medium px-3 py-1.5 hover:bg-sky-50 hover:text-sky-800 rounded-lg transition">📁 Par Catégorie (SSG)</a>
+                    <a href="/dataset-chaises" class="block text-xs font-medium px-3 py-1.5 hover:bg-rose-50 hover:text-rose-800 rounded-lg transition">🎛️ Filtre interactif (Client)</a>
+                  </div>
                 </div>
-                <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md border border-sky-100 rounded-2xl w-56 z-50 space-y-1">
-                  <li><a href="/chaises/category" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">📁 Par Catégorie (SSG)</a></li>
-                  <li><a href="/dataset-chaises" class="text-xs font-medium py-1.5 hover:bg-rose-50 rounded-lg">🎛️ Filtre interactif (Client)</a></li>
-                </ul>
               </li>
 
               <!-- Dropdown 4 : 3DS -->
-              <li class="dropdown dropdown-hover">
-                <div tabindex="0" role="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1">
+              <li class="relative group">
+                <button type="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1 cursor-pointer">
                   <span>🎮 Consoles 3DS</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div class="absolute left-0 top-full pt-1.5 hidden group-hover:block group-focus-within:block z-50">
+                  <div class="p-2 shadow-xl bg-white/98 backdrop-blur-md border border-sky-100 rounded-2xl w-56 space-y-1 text-slate-700">
+                    <a href="/consoles/genre" class="block text-xs font-medium px-3 py-1.5 hover:bg-sky-50 hover:text-sky-800 rounded-lg transition">📁 Par Genre (SSG)</a>
+                    <a href="/dataset-consoles-3ds" class="block text-xs font-medium px-3 py-1.5 hover:bg-rose-50 hover:text-rose-800 rounded-lg transition">🎛️ Filtre interactif (Client)</a>
+                  </div>
                 </div>
-                <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md border border-sky-100 rounded-2xl w-56 z-50 space-y-1">
-                  <li><a href="/consoles/genre" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">📁 Par Genre (SSG)</a></li>
-                  <li><a href="/dataset-consoles-3ds" class="text-xs font-medium py-1.5 hover:bg-rose-50 rounded-lg">🎛️ Filtre interactif (Client)</a></li>
-                </ul>
               </li>
 
               <!-- Dropdown 5 : Cinéma -->
-              <li class="dropdown dropdown-hover">
-                <div tabindex="0" role="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1">
+              <li class="relative group">
+                <button type="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1 cursor-pointer">
                   <span>🎬 Cinéma (Films)</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div class="absolute left-0 top-full pt-1.5 hidden group-hover:block group-focus-within:block z-50">
+                  <div class="p-2 shadow-xl bg-white/98 backdrop-blur-md border border-sky-100 rounded-2xl w-56 space-y-1 text-slate-700">
+                    <a href="/movies/genre" class="block text-xs font-medium px-3 py-1.5 hover:bg-sky-50 hover:text-sky-800 rounded-lg transition">📁 Par Genre (SSG)</a>
+                    <a href="/dataset-movies" class="block text-xs font-medium px-3 py-1.5 hover:bg-rose-50 hover:text-rose-800 rounded-lg transition">🎛️ Filtre interactif (Client)</a>
+                  </div>
                 </div>
-                <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md border border-sky-100 rounded-2xl w-56 z-50 space-y-1">
-                  <li><a href="/movies/genre" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">📁 Par Genre (SSG)</a></li>
-                  <li><a href="/dataset-movies" class="text-xs font-medium py-1.5 hover:bg-rose-50 rounded-lg">🎛️ Filtre interactif (Client)</a></li>
-                </ul>
               </li>
 
               <!-- Dropdown TP7 : Cartographie & a11y -->
-              <li class="dropdown dropdown-hover">
-                <div tabindex="0" role="button" class="text-xs font-bold px-3 py-2 rounded-xl text-indigo-700 bg-indigo-50/80 hover:bg-indigo-100 transition flex items-center gap-1 shadow-2xs">
+              <li class="relative group">
+                <button type="button" class="text-xs font-bold px-3 py-2 rounded-xl text-indigo-700 bg-indigo-50/80 hover:bg-indigo-100 transition flex items-center gap-1 shadow-2xs cursor-pointer">
                   <span>🗺️ TP Carto & a11y</span>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60 group-hover:rotate-180 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <div class="absolute left-0 top-full pt-1.5 hidden group-hover:block group-focus-within:block z-50">
+                  <div class="p-2 shadow-xl bg-white/98 backdrop-blur-md border border-indigo-100 rounded-2xl w-64 space-y-1 text-slate-700">
+                    <div class="text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2 py-1">TP Part 0, 1 & 2</div>
+                    <a href="/accessibilite" class="block text-xs font-medium px-3 py-1.5 hover:bg-emerald-50 hover:text-emerald-800 rounded-lg transition">♿ 0. Accessibilité (a11y)</a>
+                    <a href="/leaflet" class="block text-xs font-medium px-3 py-1.5 hover:bg-blue-50 hover:text-blue-800 rounded-lg transition">🗺️ 1. Leaflet (Établissements)</a>
+                    <a href="/geojson-plot" class="block text-xs font-medium px-3 py-1.5 hover:bg-purple-50 hover:text-purple-800 rounded-lg transition">🌍 2. GéoJSON Plot (Client 3 Select)</a>
+                    <a href="/geojson-plot-ssr" class="block text-xs font-medium px-3 py-1.5 hover:bg-indigo-50 hover:text-indigo-800 rounded-lg transition">🖥️ 2bis. GéoJSON Plot (Serveur SSG)</a>
+                  </div>
                 </div>
-                <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md border border-indigo-100 rounded-2xl w-64 z-50 space-y-1">
-                  <li class="menu-title text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2">TP Part 0, 1 & 2</li>
-                  <li><a href="/accessibilite" class="text-xs font-medium py-1.5 hover:bg-emerald-50 rounded-lg">♿ 0. Accessibilité (a11y)</a></li>
-                  <li><a href="/leaflet" class="text-xs font-medium py-1.5 hover:bg-blue-50 rounded-lg">🗺️ 1. Leaflet (Établissements)</a></li>
-                  <li><a href="/geojson-plot" class="text-xs font-medium py-1.5 hover:bg-purple-50 rounded-lg">🌍 2. GéoJSON Plot (Client 3 Select)</a></li>
-                  <li><a href="/geojson-plot-ssr" class="text-xs font-medium py-1.5 hover:bg-indigo-50 rounded-lg">🖥️ 2bis. GéoJSON Plot (Serveur SSG)</a></li>
-                </ul>
               </li>
 
               <!-- Essais TP 1 & 2 -->
@@ -147,7 +157,9 @@ const { title = "TP Plot Astro" } = Astro.props;
         <a href="/geojson-plot" class="px-2.5 py-1 rounded-lg font-semibold bg-purple-100 text-purple-800">🌍 GéoJSON</a>
         <a href="/penguins" class="px-2.5 py-1 rounded-lg font-semibold bg-sky-100 text-sky-800">Manchots</a>
         <a href="/cars/year" class="px-2.5 py-1 rounded-lg font-semibold bg-sky-100 text-sky-800">Voitures</a>
-        <a href="/chaises/category" class="px-2.5 py-1 rounded-lg font-semibold bg-pink-100 text-rose-800">Chaises</a>
+        <a href="/consoles/genre" class="px-2.5 py-1 rounded-lg font-semibold bg-pink-100 text-rose-800">3DS</a>
+        <a href="/movies/genre" class="px-2.5 py-1 rounded-lg font-semibold bg-purple-100 text-purple-800">Cinéma</a>
+        <a href="/menu" class="px-2.5 py-1 rounded-lg font-semibold bg-slate-200 text-slate-800">🧭 Menu</a>
       </div>
     </header>
 
@@ -163,5 +175,46 @@ const { title = "TP Plot Astro" } = Astro.props;
         <p class="text-slate-400">Pastel Blue & Rose Theme • DaisyUI</p>
       </div>
     </footer>
+
+    <!-- Script de stabilisation et d'interaction des menus déroulants -->
+    <script>
+      function initDropdowns() {
+        const groups = document.querySelectorAll<HTMLElement>("li.group");
+
+        groups.forEach((group) => {
+          const btn = group.querySelector<HTMLButtonElement>("button");
+          if (!btn) return;
+
+          // Clic sur le bouton du menu : bascule l'état ouvert/fermé de manière stable
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const isOpen = group.classList.contains("is-open");
+            groups.forEach((g) => g.classList.remove("is-open"));
+            if (!isOpen) {
+              group.classList.add("is-open");
+            }
+          });
+        });
+
+        // Fermer au clic n'importe où en dehors
+        document.addEventListener("click", (e) => {
+          const target = e.target as HTMLElement;
+          if (!target.closest("li.group")) {
+            groups.forEach((g) => g.classList.remove("is-open"));
+          }
+        });
+
+        // Fermer dès qu'un lien du sous-menu est sélectionné
+        document.querySelectorAll("li.group a").forEach((link) => {
+          link.addEventListener("click", () => {
+            groups.forEach((g) => g.classList.remove("is-open"));
+          });
+        });
+      }
+
+      // Initialiser au chargement et après les transitions Astro
+      initDropdowns();
+      document.addEventListener("astro:page-load", initDropdowns);
+    </script>
   </body>
 </html>

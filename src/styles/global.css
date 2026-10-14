@@ -1,2 +1,31 @@
 @import "tailwindcss";
 @plugin "daisyui";
+
+/* ============================================================
+   CORRECTIF NAVIGATION : MENUS DÉROULANTS ROBUSTES
+   ============================================================ */
+
+/* Affichage garanti au survol, au focus et en état verrouillé (.is-open) */
+.group:hover > div,
+.group:focus-within > div,
+.group.is-open > div {
+  display: block !important;
+}
+
+/* Rétablir les pointer-events pour tous les boutons de menu */
+.group > button {
+  pointer-events: auto !important;
+  cursor: pointer;
+}
+
+/* Pont invisible de survol (Hitbox Bridge) pour éviter tout décrochage */
+.group > div::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 0;
+  right: 0;
+  height: 16px;
+  background: transparent;
+  display: block;
+}
