@@ -1,0 +1,51 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import chairs from "../../../assets/chairs.json";
+
+// Détermination automatique des catégories uniques
+const categoriesList = [...new Set(chairs.map((c) => c.category))].sort();
+---
+
+<Layout title="Chaises par Catégorie • SSG getStaticPaths">
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-6 rounded-2xl shadow-xs">
+      <div class="inline-block px-2.5 py-0.5 bg-sky-100 text-sky-800 text-xs font-semibold rounded-md mb-1 border border-sky-200">
+        Dataset Chaises • Routes SSG
+      </div>
+      <h1 class="text-2xl font-bold text-slate-800">Chaises par Catégorie</h1>
+      <p class="text-xs sm:text-sm text-slate-500 mt-1">
+        Liste générée automatiquement via <code>[...new Set(chairs.map(c =&gt; c.category))]</code>.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      {
+        categoriesList.map((category) => {
+          const count = chairs.filter((c) => c.category === category).length;
+          return (
+            <a
+              href={`/chaises/category/${encodeURIComponent(category)}`}
+              class="card bg-white/90 border border-sky-100 hover:border-rose-300 hover:shadow-md transition p-6 rounded-2xl group"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <span class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-lg">
+                  🪑
+                </span>
+                <span class="badge badge-soft bg-rose-100 text-rose-700 text-xs">
+                  {count} modèles
+                </span>
+              </div>
+              <h2 class="text-lg font-bold text-slate-800 group-hover:text-rose-600 transition">
+                {category}
+              </h2>
+              <p class="text-xs text-slate-500 mt-1">
+                Visualiser les modèles de chaises de type {category} générés avec <code>getStaticPaths</code>.
+              </p>
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+</Layout>
+

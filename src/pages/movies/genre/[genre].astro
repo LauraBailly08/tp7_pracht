@@ -1,0 +1,96 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import movies from "../../../assets/movies.json";
+import PlotFigure from "../../../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+
+// Génération statique des chemins (SSG)
+export async function getStaticPaths() {
+  const genresList = [...new Set(movies.map((m) => m.genre))];
+  return genresList.map((genre) => ({
+    params: { genre },
+    props: {
+      genre,
+      filteredMovies: movies.filter((m) => m.genre === genre),
+      allGenres: genresList.sort(),
+    },
+  }));
+}
+
+const { genre } = Astro.params;
+const { filteredMovies, allGenres } = Astro.props;
+
+// Configuration du graphique Plot
+const plotOptions = {
+  title: `Box-Office des films du genre ${genre}`,
+  subtitle: `${filteredMovies.length} film(s) répertorié(s)`,
+  grid: true,
+  color: {
+    legend: true,
+  },
+  x: {
+    label: "Budget de production (Millions $) →",
+  },
+  y: {
+    label: "↑ Recettes mondiales (Millions $)",
+  },
+  marks: [
+    Plot.dot(filteredMovies, {
+      x: "budget_million",
+      y: "revenue_million",
+      stroke: "genre",
+      fill: "genre",
+      fillOpacity: 0.45,
+      r: (d: any) => (d.rating_rotten_tomatoes / 10) * 0.9,
+      title: (d: any) => `${d.title} (${d.year})\nRéalisateur: ${d.director}\nBudget: ${d.budget_million} M$\nRecettes: ${d.revenue_million} M$\nRotten Tomatoes: ${d.rating_rotten_tomatoes}%`,
+      tip: true,
+    }),
+  ],
+};
+---
+
+<Layout title={`Films ${genre} • SSG getStaticPaths`}>
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <a href="/movies/genre" class="text-xs font-semibold text-sky-600 hover:text-rose-600 flex items-center gap-1 mb-1 transition">
+          ← Retour aux genres
+        </a>
+        <h1 class="text-2xl font-bold text-slate-800">Genre : {genre}</h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Page pré-rendue statiquement via <code>getStaticPaths()</code> (Taille des bulles = Score Rotten Tomatoes).
+        </p>
+      </div>
+      <div class="badge badge-soft bg-sky-100 text-sky-800 border-sky-200 text-xs font-medium px-3 py-2">
+        {filteredMovies.length} film(s)
+      </div>
+    </div>
+
+    <!-- Navigation rapide entre genres -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-4 flex flex-row flex-wrap items-center gap-2">
+      <span class="text-xs font-semibold text-slate-600 mr-2">Changer de genre :</span>
+      {
+        allGenres.map((g) => (
+          <a
+            href={`/movies/genre/${g}`}
+            class={`btn btn-xs rounded-lg ${g === genre ? "bg-rose-500 text-white" : "bg-slate-50 text-slate-600 hover:bg-sky-50"}`}
+          >
+            {g}
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- Graphique PlotFigure -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-3">
+      <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+        Budget vs Recettes mondiales ({genre})
+      </h2>
+      <div class="bg-sky-50/40 p-4 rounded-xl flex justify-center items-center overflow-x-auto min-h-[350px]">
+        <PlotFigure options={plotOptions} />
+      </div>
+    </div>
+  </div>
+</Layout>
+

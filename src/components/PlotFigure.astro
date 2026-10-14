@@ -1,9 +1,67 @@
 ---
 import * as Plot from "@observablehq/plot";
 import { JSDOM } from "jsdom";
-const { options } = Astro.props;
 
-const plot = Plot.plot({ ...options, document: new JSDOM("").window.document });
+interface Props {
+  options: any;
+  title?: string;
+  subtitle?: string;
+  caption?: string;
+  ariaLabel?: string;
+  class?: string;
+}
+
+const {
+  options,
+  title,
+  subtitle,
+  caption,
+  ariaLabel,
+  class: className = ""
+} = Astro.props;
+
+// Fusion des options d'accessibilité (props directes ou dans l'objet options)
+const finalOptions = {
+  ...options,
+  ...(title !== undefined ? { title } : {}),
+  ...(subtitle !== undefined ? { subtitle } : {}),
+  ...(caption !== undefined ? { caption } : {}),
+  ariaLabel: ariaLabel ?? options.ariaLabel ?? title ?? "Visualisation graphique Observable Plot",
+  document: new JSDOM("").window.document
+};
+
+const plot = Plot.plot(finalOptions);
 ---
 
-<div set:html={plot.outerHTML} />
+<div class={`plot-container overflow-x-auto flex justify-center ${className}`} set:html={plot.outerHTML} />
+
+<style is:global>
+  .plot-container figure {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+  }
+  .plot-container figure h2 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+    text-align: center;
+  }
+  .plot-container figure h3 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 0.75rem;
+    text-align: center;
+  }
+  .plot-container figure figcaption {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-top: 0.5rem;
+    text-align: center;
+    font-style: italic;
+  }
+</style>

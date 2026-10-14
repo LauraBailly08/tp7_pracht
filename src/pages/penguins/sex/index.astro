@@ -1,0 +1,53 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import penguins from "../../../assets/penguins.json";
+
+// Détermination automatique des sexes (en filtrant les valeurs vides/nulles)
+const sexList = [...new Set(penguins.map((p) => p.sex).filter(Boolean))].sort();
+---
+
+<Layout title="Sexes des Manchots • TP Routes Dynamiques">
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-6 rounded-2xl shadow-xs">
+      <div class="inline-block px-2.5 py-0.5 bg-purple-100 text-purple-800 text-xs font-semibold rounded-md mb-1 border border-purple-200">
+        TP • Sous-dossier /penguins/sex/
+      </div>
+      <h1 class="text-2xl font-bold text-slate-800">Manchots par Sexe</h1>
+      <p class="text-xs sm:text-sm text-slate-500 mt-1">
+        Liste générée automatiquement via <code>[...new Set(penguins.map(p =&gt; p.sex).filter(Boolean))]</code>.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      {
+        sexList.map((sex) => {
+          const count = penguins.filter((p) => p.sex === sex).length;
+          const label = sex === "MALE" ? "Mâle (MALE)" : "Femelle (FEMALE)";
+          const icon = sex === "MALE" ? "♂️" : "♀️";
+          return (
+            <a
+              href={`/penguins/sex/${sex}`}
+              class="card bg-white/90 border border-sky-100 hover:border-purple-300 hover:shadow-md transition p-6 rounded-2xl group"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <span class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg">
+                  {icon}
+                </span>
+                <span class="badge badge-soft bg-purple-100 text-purple-700 text-xs">
+                  {count} individus
+                </span>
+              </div>
+              <h2 class="text-lg font-bold text-slate-800 group-hover:text-purple-600 transition">
+                {label}
+              </h2>
+              <p class="text-xs text-slate-500 mt-1">
+                Visualiser les données biométriques pour les individus de sexe {sex}.
+              </p>
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+</Layout>
+

@@ -1,0 +1,150 @@
+---
+import Layout from "../layouts/Layout.astro";
+import "leaflet/dist/leaflet.css";
+---
+
+<Layout title="1) Carte Leaflet.js • Établissements d'Enseignement Supérieur">
+  <div class="max-w-6xl mx-auto space-y-6 py-2">
+    <!-- En-tête -->
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-8 rounded-3xl shadow-xs space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100/80 border border-blue-200 text-xs font-semibold text-blue-800">
+        🗺️ Partie 1 • TP Leaflet.JS & Astro
+      </div>
+      <h1 class="text-3xl font-extrabold text-slate-800">
+        Carte Interactive des Établissements d'Enseignement Supérieur
+      </h1>
+      <p class="text-slate-600 text-sm leading-relaxed max-w-3xl">
+        Visualisation cartographique interactive propulsée par <strong>Leaflet.js</strong> et OpenStreetMap. Plus de 2 500 implantations universitaires et écoles en France métropolitaine et outre-mer avec popups détaillées et filtrage dynamique.
+      </p>
+
+      <!-- Barre d'outils et statistiques -->
+      <div class="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-sky-100">
+        <div class="flex flex-wrap items-center gap-2">
+          <label for="filter-type" class="text-xs font-bold text-slate-700">Filtrer par type :</label>
+          <select id="filter-type" class="select select-bordered select-sm rounded-xl text-xs bg-white">
+            <option value="ALL">Tous les types d'établissements</option>
+            <option value="Université">Universités</option>
+            <option value="Institut universitaire de technologie">IUT</option>
+            <option value="Ecole d'ingénieurs">Écoles d'ingénieurs</option>
+            <option value="Service">Services universitaires</option>
+          </select>
+        </div>
+
+        <div class="flex items-center gap-3 text-xs font-semibold text-slate-600">
+          <span class="badge badge-primary badge-soft" id="count-badge">2 507 établissements</span>
+          <button id="btn-recenter" class="btn btn-xs btn-outline rounded-lg">📍 Recentrer sur la France</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Carte Leaflet -->
+    <div class="card bg-white border border-sky-100 shadow-sm rounded-3xl overflow-hidden p-2">
+      <div id="map" style="height: 650px;" class="w-full rounded-2xl z-10" aria-label="Carte interactive de France avec les implantations d'enseignement supérieur" role="region"></div>
+    </div>
+
+    <!-- Note pédagogique Leaflet Quick Start -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-3 text-xs text-slate-600">
+      <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+        <span>📘</span> Intégration Leaflet Quick Start & Données Ouvertes
+      </h2>
+      <ul class="list-disc list-inside space-y-1">
+        <li><strong>Leaflet CSS :</strong> importé dans le frontmatter Astro (<code>import "leaflet/dist/leaflet.css"</code>).</li>
+        <li><strong>Initialisation :</strong> <code>L.map("map").setView([46.6033, 1.883], 6)</code> centré sur la France.</li>
+        <li><strong>Fond de carte :</strong> Tuiles OpenStreetMap via <code>L.tileLayer(...)</code> avec attribution conforme.</li>
+        <li><strong>Marqueurs :</strong> <code>L.circleMarker</code> performants avec popups détaillées (nom, université de rattachement, commune, adresse).</li>
+      </ul>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import listeEtablissements from "../assets/listeEtablissements.json";
+  import L from "leaflet";
+
+  // Dans l'élément d'ID "map" : création de la carte centrée sur la France avec zoom niveau 6
+  const map = L.map("map").setView([46.6033, 1.883], 6);
+
+  // Ajout du fond de carte OpenStreetMap
+  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  // Exemple Quick Start Leaflet : un marqueur de bienvenue sur Paris
+  const sampleMarker = L.marker([48.8566, 2.3522]).addTo(map)
+    .bindPopup("<b>Capitale de France</b><br>Bienvenue sur la carte des universités !");
+
+  // Calque de groupe pour gérer les établissements filtrables
+  const markersLayer = L.layerGroup().addTo(map);
+
+  const filterSelect = document.getElementById("filter-type") as HTMLSelectElement;
+  const countBadge = document.getElementById("count-badge") as HTMLElement;
+  const btnRecenter = document.getElementById("btn-recenter") as HTMLButtonElement;
+
+  function renderMarkers(filter: string) {
+    markersLayer.clearLayers();
+
+    let count = 0;
+    listeEtablissements.forEach((item: any) => {
+      if (!item.coordonnees || typeof item.coordonnees.lat !== "number" || typeof item.coordonnees.lon !== "number") {
+        return;
+      }
+
+      if (filter !== "ALL") {
+        const itemType = (item.type || "") + " " + (item.nature || "");
+        if (!itemType.toLowerCase().includes(filter.toLowerCase())) {
+          return;
+        }
+      }
+
+      count++;
+
+      // Style de couleur selon le type
+      let color = "#3b82f6"; // Bleu universités
+      if (item.type && item.type.toLowerCase().includes("ingénieur")) color = "#e11d48"; // Rose/rouge ingénieurs
+      else if (item.type && item.type.toLowerCase().includes("technologie")) color = "#10b981"; // Vert IUT
+      else if (item.nature && item.nature.toLowerCase().includes("service")) color = "#8b5cf6"; // Violet services
+
+      const marker = L.circleMarker([item.coordonnees.lat, item.coordonnees.lon], {
+        radius: 6,
+        fillColor: color,
+        color: "#ffffff",
+        weight: 1.5,
+        opacity: 0.9,
+        fillOpacity: 0.8
+      });
+
+      const popupContent = `
+        <div style="font-family: system-ui, sans-serif; font-size: 12px; max-width: 260px;">
+          <h4 style="font-weight: bold; margin: 0 0 4px 0; color: #1e293b;">${item.nom}</h4>
+          ${item.siege ? `<p style="margin: 0 0 2px 0; color: #475569;"><strong>Siège :</strong> ${item.siege}</p>` : ""}
+          <p style="margin: 0 0 2px 0; color: #0284c7;"><strong>Type :</strong> ${item.type || item.nature || "Enseignement supérieur"}</p>
+          <p style="margin: 0 0 2px 0; color: #64748b;"><strong>Commune :</strong> ${item.commune} (${item.departement || ""})</p>
+          ${item.adresse ? `<p style="margin: 0; color: #94a3b8; font-size: 11px;">📍 ${item.adresse}</p>` : ""}
+        </div>
+      `;
+
+      marker.bindPopup(popupContent);
+      markersLayer.addLayer(marker);
+    });
+
+    if (countBadge) {
+      countBadge.textContent = `${count.toLocaleString("fr-FR")} établissements affichés`;
+    }
+  }
+
+  // Filtrage réactif
+  filterSelect?.addEventListener("change", (e) => {
+    const target = e.target as HTMLSelectElement;
+    renderMarkers(target.value);
+  });
+
+  // Recentrer la vue
+  btnRecenter?.addEventListener("click", () => {
+    map.setView([46.6033, 1.883], 6);
+  });
+
+  // Initialisation au chargement
+  renderMarkers("ALL");
+</script>
+

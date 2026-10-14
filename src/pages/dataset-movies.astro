@@ -1,0 +1,141 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Films du Box-Office • TP4">
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <!-- En-tête de la page -->
+    <div class="bg-white/80 backdrop-blur-sm border border-pink-100 p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <div class="inline-block px-2.5 py-0.5 bg-pink-100/70 text-rose-800 text-xs font-semibold rounded-md mb-1 border border-pink-200">
+          Dataset Cinéma • Box-Office
+        </div>
+        <h1 class="text-2xl font-bold text-slate-800">Films & Box-Office Mondial</h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Visualisation du rapport Budget vs Recettes mondiales et notes critiques Rotten Tomatoes.
+        </p>
+      </div>
+      <div id="movies-counter" class="badge badge-soft bg-sky-100 text-sky-800 border-sky-200 text-xs font-medium px-3 py-2">
+        Chargement...
+      </div>
+    </div>
+
+    <!-- Contrôles simples DaisyUI -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="select-genre" class="block text-xs font-semibold text-slate-600 mb-1.5">
+            Filtrer par Genre :
+          </label>
+          <select
+            id="select-genre"
+            class="select select-bordered select-sm w-full bg-white border-sky-200 focus:border-rose-400 focus:outline-none rounded-xl"
+          >
+            <option value="">Tous les genres</option>
+            <option value="Action">Action</option>
+            <option value="Sci-Fi">Sci-Fi</option>
+            <option value="Animation">Animation</option>
+            <option value="Drame">Drame</option>
+            <option value="Comedie">Comédie</option>
+            <option value="Aventure">Aventure</option>
+            <option value="Horreur">Horreur</option>
+            <option value="Fantastique">Fantastique</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="select-decade" class="block text-xs font-semibold text-slate-600 mb-1.5">
+            Filtrer par Période :
+          </label>
+          <select
+            id="select-decade"
+            class="select select-bordered select-sm w-full bg-white border-sky-200 focus:border-rose-400 focus:outline-none rounded-xl"
+          >
+            <option value="">Toutes les années</option>
+            <option value="2020s">Années 2020 (2020-2024)</option>
+            <option value="2010s">Années 2010 (2010-2019)</option>
+            <option value="2000s">Années 2000 et avant</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphique : Budget vs Recettes mondiales -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-3">
+      <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+        Budget (M$) vs Recettes Mondiales (M$)
+      </h2>
+      <div id="plot-movies" class="flex justify-center p-3 bg-sky-50/40 rounded-xl overflow-x-auto min-h-[350px] items-center"></div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import movies from "../assets/movies.json";
+
+  const selectGenre = document.querySelector("#select-genre") as HTMLSelectElement;
+  const selectDecade = document.querySelector("#select-decade") as HTMLSelectElement;
+  const plotDiv = document.querySelector("#plot-movies") as HTMLDivElement;
+  const counterDiv = document.querySelector("#movies-counter") as HTMLDivElement;
+
+  function renderPlot() {
+    const genre = selectGenre.value;
+    const decade = selectDecade.value;
+
+    const filtered = movies.filter((m) => {
+      if (genre && m.genre !== genre) return false;
+      if (decade === "2020s" && m.year < 2020) return false;
+      if (decade === "2010s" && (m.year < 2010 || m.year > 2019)) return false;
+      if (decade === "2000s" && m.year >= 2010) return false;
+      return true;
+    });
+
+    if (counterDiv) {
+      counterDiv.textContent = `${filtered.length} films affichés sur ${movies.length}`;
+    }
+
+    if (plotDiv) {
+      plotDiv.innerHTML = "";
+
+      if (filtered.length === 0) {
+        plotDiv.innerHTML = `<p class="text-sm text-slate-400">Aucun film trouvé.</p>`;
+        return;
+      }
+
+      const plot = Plot.plot({
+        grid: true,
+        color: {
+          legend: true,
+        },
+        x: {
+          label: "Budget de production (Millions $) →",
+        },
+        y: {
+          label: "↑ Recettes mondiales Box-Office (Millions $)",
+        },
+        marks: [
+          Plot.dot(filtered, {
+            x: "budget_million",
+            y: "revenue_million",
+            stroke: "genre",
+            fill: "genre",
+            fillOpacity: 0.4,
+            r: 7,
+            title: (d) => `${d.title} (${d.year})\nRéalisateur: ${d.director}\nBudget: ${d.budget_million} M$\nRecettes: ${d.revenue_million} M$\nRotten Tomatoes: ${d.rating_rotten_tomatoes}%`,
+            tip: true,
+          }),
+        ],
+      });
+
+      plotDiv.append(plot);
+    }
+  }
+
+  selectGenre.addEventListener("change", renderPlot);
+  selectDecade.addEventListener("change", renderPlot);
+
+  renderPlot();
+</script>
+

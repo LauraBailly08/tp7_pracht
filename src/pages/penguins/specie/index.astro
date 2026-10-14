@@ -1,0 +1,51 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import penguins from "../../../assets/penguins.json";
+
+// Détermination automatique des espèces
+const speciesList = [...new Set(penguins.map((p) => p.species))].sort();
+---
+
+<Layout title="Espèces de Manchots • TP Routes Dynamiques">
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-6 rounded-2xl shadow-xs">
+      <div class="inline-block px-2.5 py-0.5 bg-sky-100 text-sky-800 text-xs font-semibold rounded-md mb-1 border border-sky-200">
+        TP • Sous-dossier /penguins/specie/
+      </div>
+      <h1 class="text-2xl font-bold text-slate-800">Manchots par Espèce</h1>
+      <p class="text-xs sm:text-sm text-slate-500 mt-1">
+        Liste générée automatiquement via <code>[...new Set(penguins.map(p =&gt; p.species))]</code>.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      {
+        speciesList.map((species) => {
+          const count = penguins.filter((p) => p.species === species).length;
+          return (
+            <a
+              href={`/penguins/specie/${species}`}
+              class="card bg-white/90 border border-sky-100 hover:border-rose-300 hover:shadow-md transition p-6 rounded-2xl group"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <span class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-lg">
+                  🐧
+                </span>
+                <span class="badge badge-soft bg-rose-100 text-rose-700 text-xs">
+                  {count} individus
+                </span>
+              </div>
+              <h2 class="text-lg font-bold text-slate-800 group-hover:text-rose-600 transition">
+                {species}
+              </h2>
+              <p class="text-xs text-slate-500 mt-1">
+                Voir la page dédiée avec graphique pré-rendu statiquement (SSG).
+              </p>
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+</Layout>
+

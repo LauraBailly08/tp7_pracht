@@ -1,26 +1,167 @@
 ---
 import "../styles/global.css";
+
+interface Props {
+  title?: string;
+}
+
+const { title = "TP Plot Astro" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="fr" data-theme="cupcake" class="h-full bg-gradient-to-br from-sky-50 via-pink-50/40 to-slate-50 text-slate-800">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>Astro Basics</title>
+    <title>{title}</title>
   </head>
-  <body>
-    <slot />
+  <body class="min-h-full flex flex-col font-sans selection:bg-rose-200 selection:text-slate-900">
+    <!-- Barre de Navigation Moderne DaisyUI -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-white/90 border-b border-sky-100 shadow-xs">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="navbar min-h-16 px-0 gap-2">
+          
+          <!-- Logo & Titre -->
+          <div class="navbar-start w-auto">
+            <a href="/" class="flex items-center gap-2 text-base sm:text-lg font-bold tracking-tight text-slate-800 hover:opacity-85 transition">
+              <span class="p-1.5 rounded-xl bg-gradient-to-tr from-sky-200 to-rose-200 shadow-xs">📊</span>
+              <span class="bg-gradient-to-r from-sky-700 via-purple-700 to-rose-600 bg-clip-text text-transparent">
+                TP Astro & Plot
+              </span>
+            </a>
+          </div>
+
+          <!-- Menu Principal Desktop -->
+          <div class="navbar-center hidden lg:flex flex-1 justify-center">
+            <ul class="menu menu-horizontal gap-1 p-0">
+              <li>
+                <a href="/" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 hover:bg-rose-50/80 transition">
+                  🏠 Accueil
+                </a>
+              </li>
+
+              <!-- Dropdown 1 : Manchots -->
+              <li class="dropdown dropdown-hover">
+                <div tabindex="0" role="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1">
+                  <span>🐧 Manchots</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </div>
+                <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md border border-sky-100 rounded-2xl w-60 z-50 space-y-1">
+                  <li class="menu-title text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2">Routes Statiques & Onglets</li>
+                  <li><a href="/penguins" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">📑 Onglets par Espèce</a></li>
+                  <li><a href="/penguins/specie" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">🧬 Par Espèce (SSG)</a></li>
+                  <li><a href="/penguins/island" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">🏝️ Par Île (SSG)</a></li>
+                  <li><a href="/penguins/sex" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">⚧️ Par Sexe (SSG)</a></li>
+                  <li class="menu-title text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2 pt-2 border-t border-slate-100">Filtres Client</li>
+                  <li><a href="/penguin-filtre" class="text-xs font-medium py-1.5 hover:bg-rose-50 rounded-lg">🔍 1 Filtre Espèce</a></li>
+                  <li><a href="/penguin-multi-filtres" class="text-xs font-medium py-1.5 hover:bg-rose-50 rounded-lg">🎛️ Multi-Filtres & Séries</a></li>
+                </ul>
+              </li>
+
+              <!-- Dropdown 2 : Voitures -->
+              <li>
+                <a href="/cars/year" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-sky-700 hover:bg-sky-50/80 transition flex items-center gap-1">
+                  <span>🚗 Voitures (SSR)</span>
+                </a>
+              </li>
+
+              <!-- Dropdown 3 : Chaises -->
+              <li class="dropdown dropdown-hover">
+                <div tabindex="0" role="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1">
+                  <span>🪑 Chaises</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </div>
+                <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md border border-sky-100 rounded-2xl w-56 z-50 space-y-1">
+                  <li><a href="/chaises/category" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">📁 Par Catégorie (SSG)</a></li>
+                  <li><a href="/dataset-chaises" class="text-xs font-medium py-1.5 hover:bg-rose-50 rounded-lg">🎛️ Filtre interactif (Client)</a></li>
+                </ul>
+              </li>
+
+              <!-- Dropdown 4 : 3DS -->
+              <li class="dropdown dropdown-hover">
+                <div tabindex="0" role="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1">
+                  <span>🎮 Consoles 3DS</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </div>
+                <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md border border-sky-100 rounded-2xl w-56 z-50 space-y-1">
+                  <li><a href="/consoles/genre" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">📁 Par Genre (SSG)</a></li>
+                  <li><a href="/dataset-consoles-3ds" class="text-xs font-medium py-1.5 hover:bg-rose-50 rounded-lg">🎛️ Filtre interactif (Client)</a></li>
+                </ul>
+              </li>
+
+              <!-- Dropdown 5 : Cinéma -->
+              <li class="dropdown dropdown-hover">
+                <div tabindex="0" role="button" class="text-xs font-semibold px-3 py-2 rounded-xl text-slate-700 hover:text-rose-600 transition flex items-center gap-1">
+                  <span>🎬 Cinéma (Films)</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </div>
+                <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md border border-sky-100 rounded-2xl w-56 z-50 space-y-1">
+                  <li><a href="/movies/genre" class="text-xs font-medium py-1.5 hover:bg-sky-50 rounded-lg">📁 Par Genre (SSG)</a></li>
+                  <li><a href="/dataset-movies" class="text-xs font-medium py-1.5 hover:bg-rose-50 rounded-lg">🎛️ Filtre interactif (Client)</a></li>
+                </ul>
+              </li>
+
+              <!-- Dropdown TP7 : Cartographie & a11y -->
+              <li class="dropdown dropdown-hover">
+                <div tabindex="0" role="button" class="text-xs font-bold px-3 py-2 rounded-xl text-indigo-700 bg-indigo-50/80 hover:bg-indigo-100 transition flex items-center gap-1 shadow-2xs">
+                  <span>🗺️ TP Carto & a11y</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 opacity-60" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                </div>
+                <ul tabindex="0" class="dropdown-content menu p-2 shadow-xl bg-white/95 backdrop-blur-md border border-indigo-100 rounded-2xl w-64 z-50 space-y-1">
+                  <li class="menu-title text-[10px] uppercase tracking-wider text-slate-400 font-bold px-2">TP Part 0, 1 & 2</li>
+                  <li><a href="/accessibilite" class="text-xs font-medium py-1.5 hover:bg-emerald-50 rounded-lg">♿ 0. Accessibilité (a11y)</a></li>
+                  <li><a href="/leaflet" class="text-xs font-medium py-1.5 hover:bg-blue-50 rounded-lg">🗺️ 1. Leaflet (Établissements)</a></li>
+                  <li><a href="/geojson-plot" class="text-xs font-medium py-1.5 hover:bg-purple-50 rounded-lg">🌍 2. GéoJSON Plot (Client 3 Select)</a></li>
+                  <li><a href="/geojson-plot-ssr" class="text-xs font-medium py-1.5 hover:bg-indigo-50 rounded-lg">🖥️ 2bis. GéoJSON Plot (Serveur SSG)</a></li>
+                </ul>
+              </li>
+
+              <!-- Essais TP 1 & 2 -->
+              <li>
+                <a href="/simple" class="text-xs font-semibold px-2.5 py-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition">
+                  1. Simple
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Badges & Status -->
+          <div class="navbar-end w-auto flex items-center gap-2">
+            <span class="badge badge-soft bg-sky-100 text-sky-800 border-sky-200 text-xs font-medium hidden sm:inline-flex">
+              SSG & SSR
+            </span>
+            <span class="badge badge-soft bg-pink-100 text-rose-800 border-pink-200 text-xs font-medium">
+              5 Datasets + Carto
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Menu Mobile / Tablette étendu -->
+      <div class="lg:hidden px-4 pb-3 flex flex-wrap gap-1.5 border-t border-sky-100 pt-2 bg-white/95 text-xs">
+        <a href="/" class="px-2.5 py-1 rounded-lg font-semibold bg-slate-100 text-slate-800">Accueil</a>
+        <a href="/accessibilite" class="px-2.5 py-1 rounded-lg font-semibold bg-emerald-100 text-emerald-800">♿ a11y</a>
+        <a href="/leaflet" class="px-2.5 py-1 rounded-lg font-semibold bg-blue-100 text-blue-800">🗺️ Leaflet</a>
+        <a href="/geojson-plot" class="px-2.5 py-1 rounded-lg font-semibold bg-purple-100 text-purple-800">🌍 GéoJSON</a>
+        <a href="/penguins" class="px-2.5 py-1 rounded-lg font-semibold bg-sky-100 text-sky-800">Manchots</a>
+        <a href="/cars/year" class="px-2.5 py-1 rounded-lg font-semibold bg-sky-100 text-sky-800">Voitures</a>
+        <a href="/chaises/category" class="px-2.5 py-1 rounded-lg font-semibold bg-pink-100 text-rose-800">Chaises</a>
+      </div>
+    </header>
+
+    <!-- Contenu Principal -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+      <slot />
+    </main>
+
+    <!-- Footer épuré -->
+    <footer class="mt-auto py-6 border-t border-sky-100 bg-white/70 text-center text-xs text-slate-500">
+      <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <p>TP & TD Astro • Routes dynamiques SSG (getStaticPaths) & SSR • Visualisation Observable Plot</p>
+        <p class="text-slate-400">Pastel Blue & Rose Theme • DaisyUI</p>
+      </div>
+    </footer>
   </body>
 </html>
-
-<style>
-  html,
-  body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-  }
-</style>

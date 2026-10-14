@@ -1,0 +1,87 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import cars from "../../../assets/cars.json";
+import PlotFigure from "../../../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+
+export const prerender = false;
+
+const { year } = Astro.params;
+const years = [...new Set(cars.map((c) => c.year))].sort();
+
+// Filtrer les voitures pour l'année spécifiée
+const filteredCars = cars.filter((car) => car.year.toString() === year);
+
+// Configuration du graphique
+const plotOptions = {
+  grid: true,
+  marks: [
+    Plot.dot(filteredCars, {
+      x: "weight (lb)",
+      y: "power (hp)",
+      fill: "steelblue",
+      r: 6,
+      fillOpacity: 0.7,
+      title: (d: any) => `${d.name}\nPoids: ${d["weight (lb)"]} lb\nPuissance: ${d["power (hp)"]} hp\nOrigine: ${d.origin}`,
+      tip: true,
+    }),
+  ],
+  x: {
+    label: "Poids (lb) →",
+  },
+  y: {
+    label: "↑ Puissance (hp)",
+  },
+  title: `Relation Puissance vs Poids - Voitures ${year}`,
+};
+---
+
+<Layout title={`Voitures de l'année ${year} • TD`}>
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <a href="/cars/year" class="text-xs font-semibold text-sky-600 hover:text-rose-600 flex items-center gap-1 mb-1 transition">
+          ← Retour à la liste des années
+        </a>
+        <h1 class="text-2xl font-bold text-slate-800">Voitures de l'année {year}</h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Route paramétrique dynamique SSR (<code>prerender = false</code>) : <code>/cars/year/{year}</code>
+        </p>
+      </div>
+      <div class="badge badge-soft bg-sky-100 text-sky-800 border-sky-200 text-xs font-medium px-3 py-2">
+        {filteredCars.length} voiture(s) trouvée(s)
+      </div>
+    </div>
+
+    <!-- Sélecteur rapide d'année -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-4 flex flex-row flex-wrap items-center gap-2">
+      <span class="text-xs font-semibold text-slate-600 mr-2">Changer d'année :</span>
+      {
+        years.map((y) => (
+          <a
+            href={`/cars/year/${y}`}
+            class={`btn btn-xs rounded-lg ${y.toString() === year ? "bg-rose-500 text-white" : "bg-slate-50 text-slate-600 hover:bg-sky-50"}`}
+          >
+            {y}
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- Graphique SSR via PlotFigure -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-3">
+      <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+        Graphique SSR : Puissance vs Poids ({year})
+      </h2>
+      <div class="bg-sky-50/40 p-4 rounded-xl overflow-x-auto min-h-[340px] flex justify-center items-center">
+        {filteredCars.length > 0 ? (
+          <PlotFigure options={plotOptions} />
+        ) : (
+          <p class="text-sm text-slate-400">Aucune voiture trouvée pour l'année {year}.</p>
+        )}
+      </div>
+    </div>
+  </div>
+</Layout>
+

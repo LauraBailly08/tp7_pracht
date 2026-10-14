@@ -12,11 +12,16 @@
     "@astrojs/netlify": "^8.2.3",
     "@observablehq/plot": "^0.6.17",
     "@tailwindcss/vite": "^4.3.3",
+    "@types/leaflet": "^1.9.22",
     "astro": "^7.2.4",
+    "daisy": "^0.2.0",
     "jsdom": "^30.0.1",
-    "tailwindcss": "^4.3.3"
+    "leaflet": "^1.9.4",
+    "tailwindcss": "^4.3.3",
+    "ui": "^0.2.4"
   },
   "devDependencies": {
-    "@types/jsdom": "^30.0.0"
+    "@types/jsdom": "^30.0.0",
+    "daisyui": "^5.7.43"
   }
 }

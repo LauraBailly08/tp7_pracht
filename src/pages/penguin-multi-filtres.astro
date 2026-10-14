@@ -1,0 +1,198 @@
+﻿---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="4. Multi-Filtres Manchots • TP4">
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <!-- En-tete -->
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <div class="inline-block px-2.5 py-0.5 bg-sky-100/70 text-sky-800 text-xs font-semibold rounded-md mb-1 border border-sky-200">
+          Etape 4 • Filtres Croises
+        </div>
+        <h1 class="text-2xl font-bold text-slate-800">Manchots Multi-Filtres & Series</h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Filtres combines (espece, ile, sexe) avec nuage de points et facettes par ile.
+        </p>
+      </div>
+      <div id="stats-summary" class="badge badge-soft bg-sky-100 text-sky-800 border-sky-200 text-xs font-medium px-3 py-2">
+        Chargement...
+      </div>
+    </div>
+
+    <!-- Controles DaisyUI -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-5 space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- Filtre Espece -->
+        <div>
+          <label for="species" class="block text-xs font-semibold text-slate-600 mb-1.5">
+            Espece
+          </label>
+          <select
+            name="species"
+            id="species"
+            class="select select-bordered select-sm w-full bg-white border-sky-200 focus:border-sky-400 focus:outline-none rounded-xl"
+          >
+            <option value="">Toutes les especes (All)</option>
+            <option value="Adelie">Adelie</option>
+            <option value="Chinstrap">Chinstrap</option>
+            <option value="Gentoo">Gentoo</option>
+          </select>
+        </div>
+
+        <!-- Filtre Ile -->
+        <div>
+          <label for="island" class="block text-xs font-semibold text-slate-600 mb-1.5">
+            Ile (Island)
+          </label>
+          <select
+            name="island"
+            id="island"
+            class="select select-bordered select-sm w-full bg-white border-sky-200 focus:border-sky-400 focus:outline-none rounded-xl"
+          >
+            <option value="">Toutes les iles (All)</option>
+            <option value="Biscoe">Biscoe</option>
+            <option value="Dream">Dream</option>
+            <option value="Torgersen">Torgersen</option>
+          </select>
+        </div>
+
+        <!-- Filtre Sexe -->
+        <div>
+          <label for="sex" class="block text-xs font-semibold text-slate-600 mb-1.5">
+            Sexe
+          </label>
+          <select
+            name="sex"
+            id="sex"
+            class="select select-bordered select-sm w-full bg-white border-sky-200 focus:border-sky-400 focus:outline-none rounded-xl"
+          >
+            <option value="">Tous les sexes (All)</option>
+            <option value="MALE">Male (MALE)</option>
+            <option value="FEMALE">Femelle (FEMALE)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-sky-50">
+        <button
+          id="reset-btn"
+          type="button"
+          class="btn btn-xs btn-ghost text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg"
+        >
+          Reset filtres
+        </button>
+      </div>
+    </div>
+
+    <!-- Grille des graphiques -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-5 space-y-3">
+        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+          1. Nuage de points global
+        </h2>
+        <div id="plot-main" class="flex justify-center p-2 bg-sky-50/30 rounded-xl min-h-[340px] items-center overflow-x-auto"></div>
+      </div>
+
+      <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-5 space-y-3">
+        <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+          2. Series a Facettes par Ile
+        </h2>
+        <div id="plot-faceted" class="flex justify-center p-2 bg-pink-50/20 rounded-xl min-h-[340px] items-center overflow-x-auto"></div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import penguins from "../assets/penguins.json";
+
+  const selectSpecies = document.querySelector("#species") as HTMLSelectElement;
+  const selectIsland = document.querySelector("#island") as HTMLSelectElement;
+  const selectSex = document.querySelector("#sex") as HTMLSelectElement;
+  const resetBtn = document.querySelector("#reset-btn") as HTMLButtonElement;
+  const statsSummary = document.querySelector("#stats-summary") as HTMLDivElement;
+
+  const divMain = document.querySelector("#plot-main") as HTMLDivElement;
+  const divFaceted = document.querySelector("#plot-faceted") as HTMLDivElement;
+
+  function updateVisualizations() {
+    const speciesVal = selectSpecies.value;
+    const islandVal = selectIsland.value;
+    const sexVal = selectSex.value;
+
+    const filtered = penguins.filter((item) => {
+      if (speciesVal && item.species !== speciesVal) return false;
+      if (islandVal && item.island !== islandVal) return false;
+      if (sexVal && item.sex !== sexVal) return false;
+      return true;
+    });
+
+    if (statsSummary) {
+      statsSummary.textContent = `${filtered.length} manchots affiches sur ${penguins.length}`;
+    }
+
+    if (divMain) {
+      divMain.innerHTML = "";
+      const plotMain = Plot.plot({
+        grid: true,
+        color: {
+          legend: true,
+          domain: ["Adelie", "Chinstrap", "Gentoo"],
+        },
+        x: { label: "Longueur du bec (mm) ->" },
+        y: { label: "^ Profondeur du bec (mm)" },
+        marks: [
+          Plot.dot(filtered, {
+            x: "culmen_length_mm",
+            y: "culmen_depth_mm",
+            stroke: "species",
+            tip: true,
+          }),
+        ],
+      });
+      divMain.append(plotMain);
+    }
+
+    if (divFaceted) {
+      divFaceted.innerHTML = "";
+      const plotFaceted = Plot.plot({
+        grid: true,
+        color: {
+          legend: false,
+          domain: ["Adelie", "Chinstrap", "Gentoo"],
+        },
+        fx: { label: "Ile" },
+        x: { label: "Longueur (mm)" },
+        y: { label: "Profondeur (mm)" },
+        marks: [
+          Plot.frame(),
+          Plot.dot(filtered, {
+            fx: "island",
+            x: "culmen_length_mm",
+            y: "culmen_depth_mm",
+            stroke: "species",
+            tip: true,
+          }),
+        ],
+      });
+      divFaceted.append(plotFaceted);
+    }
+  }
+
+  [selectSpecies, selectIsland, selectSex].forEach((select) => {
+    select.addEventListener("change", updateVisualizations);
+  });
+
+  resetBtn?.addEventListener("click", () => {
+    selectSpecies.value = "";
+    selectIsland.value = "";
+    selectSex.value = "";
+    updateVisualizations();
+  });
+
+  updateVisualizations();
+</script>

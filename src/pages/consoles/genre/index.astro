@@ -1,0 +1,51 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import games from "../../../assets/games_3ds.json";
+
+// Détermination automatique des genres
+const genresList = [...new Set(games.map((g) => g.genre))].sort();
+---
+
+<Layout title="Jeux 3DS par Genre • SSG getStaticPaths">
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="bg-white/80 backdrop-blur-sm border border-pink-100 p-6 rounded-2xl shadow-xs">
+      <div class="inline-block px-2.5 py-0.5 bg-pink-100 text-rose-800 text-xs font-semibold rounded-md mb-1 border border-pink-200">
+        Dataset 3DS • Routes SSG
+      </div>
+      <h1 class="text-2xl font-bold text-slate-800">Jeux 3DS par Genre</h1>
+      <p class="text-xs sm:text-sm text-slate-500 mt-1">
+        Liste générée automatiquement via <code>[...new Set(games.map(g =&gt; g.genre))]</code>.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      {
+        genresList.map((genre) => {
+          const count = games.filter((g) => g.genre === genre).length;
+          return (
+            <a
+              href={`/consoles/genre/${encodeURIComponent(genre)}`}
+              class="card bg-white/90 border border-sky-100 hover:border-pink-300 hover:shadow-md transition p-6 rounded-2xl group"
+            >
+              <div class="flex items-center justify-between mb-3">
+                <span class="w-10 h-10 rounded-xl bg-pink-100 text-rose-700 flex items-center justify-center font-bold text-lg">
+                  🎮
+                </span>
+                <span class="badge badge-soft bg-sky-100 text-sky-700 text-xs">
+                  {count} jeux
+                </span>
+              </div>
+              <h2 class="text-lg font-bold text-slate-800 group-hover:text-rose-600 transition">
+                {genre}
+              </h2>
+              <p class="text-xs text-slate-500 mt-1">
+                Visualiser les jeux du genre {genre} avec <code>getStaticPaths</code>.
+              </p>
+            </a>
+          );
+        })
+      }
+    </div>
+  </div>
+</Layout>
+

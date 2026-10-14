@@ -1,0 +1,140 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Consoles & Jeux 3DS • TP4">
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <!-- En-tête de la page -->
+    <div class="bg-white/80 backdrop-blur-sm border border-pink-100 p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <div class="inline-block px-2.5 py-0.5 bg-pink-100/70 text-rose-800 text-xs font-semibold rounded-md mb-1 border border-pink-200">
+          Dataset 2 • Jeux Vidéo
+        </div>
+        <h1 class="text-2xl font-bold text-slate-800">Nintendo 3DS</h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Visualisation des ventes mondiales et scores Metacritic des jeux phares.
+        </p>
+      </div>
+      <div id="games-counter" class="badge badge-soft bg-sky-100 text-sky-800 border-sky-200 text-xs font-medium px-3 py-2">
+        Chargement...
+      </div>
+    </div>
+
+    <!-- Contrôles simples DaisyUI -->
+    <div class="card bg-white/90 border border-pink-100 shadow-xs rounded-2xl p-5">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label for="select-genre" class="block text-xs font-semibold text-slate-600 mb-1.5">
+            Filtrer par Genre :
+          </label>
+          <select
+            id="select-genre"
+            class="select select-bordered select-sm w-full bg-white border-pink-200 focus:border-sky-400 focus:outline-none rounded-xl"
+          >
+            <option value="">Tous les genres</option>
+            <option value="RPG">RPG</option>
+            <option value="Action-Aventure">Action-Aventure</option>
+            <option value="Plateforme">Plateforme</option>
+            <option value="Course">Course</option>
+            <option value="Simulation">Simulation</option>
+            <option value="Combat">Combat</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="select-publisher" class="block text-xs font-semibold text-slate-600 mb-1.5">
+            Filtrer par Éditeur :
+          </label>
+          <select
+            id="select-publisher"
+            class="select select-bordered select-sm w-full bg-white border-pink-200 focus:border-sky-400 focus:outline-none rounded-xl"
+          >
+            <option value="">Tous les éditeurs</option>
+            <option value="Nintendo">Nintendo</option>
+            <option value="Capcom">Capcom</option>
+            <option value="Square Enix">Square Enix</option>
+            <option value="Atlus">Atlus</option>
+            <option value="Level-5">Level-5</option>
+            <option value="Sega">Sega</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graphique : Ventes vs Score Metacritic -->
+    <div class="card bg-white/90 border border-pink-100 shadow-xs rounded-2xl p-6 space-y-3">
+      <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+        Ventes Mondiales (Millions) vs Score Metacritic (/100)
+      </h2>
+      <div id="plot-games" class="flex justify-center p-3 bg-pink-50/30 rounded-xl overflow-x-auto min-h-[340px] items-center"></div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import games from "../assets/games_3ds.json";
+
+  const selectGenre = document.querySelector("#select-genre") as HTMLSelectElement;
+  const selectPublisher = document.querySelector("#select-publisher") as HTMLSelectElement;
+  const plotDiv = document.querySelector("#plot-games") as HTMLDivElement;
+  const counterDiv = document.querySelector("#games-counter") as HTMLDivElement;
+
+  function renderPlot() {
+    const genre = selectGenre.value;
+    const publisher = selectPublisher.value;
+
+    const filtered = games.filter((g) => {
+      if (genre && g.genre !== genre) return false;
+      if (publisher && g.publisher !== publisher) return false;
+      return true;
+    });
+
+    if (counterDiv) {
+      counterDiv.textContent = `${filtered.length} jeux affichés sur ${games.length}`;
+    }
+
+    if (plotDiv) {
+      plotDiv.innerHTML = "";
+
+      if (filtered.length === 0) {
+        plotDiv.innerHTML = `<p class="text-sm text-slate-400">Aucun jeu ne correspond aux critères.</p>`;
+        return;
+      }
+
+      const plot = Plot.plot({
+        grid: true,
+        color: {
+          legend: true,
+        },
+        x: {
+          label: "Score Metacritic (/100) →",
+          domain: [65, 96],
+        },
+        y: {
+          label: "↑ Ventes mondiales (Millions)",
+        },
+        marks: [
+          Plot.dot(filtered, {
+            x: "metacritic_score",
+            y: "global_sales_million",
+            stroke: "genre",
+            fill: "genre",
+            fillOpacity: 0.4,
+            r: 7,
+            tip: true,
+          }),
+        ],
+      });
+
+      plotDiv.append(plot);
+    }
+  }
+
+  selectGenre.addEventListener("change", renderPlot);
+  selectPublisher.addEventListener("change", renderPlot);
+
+  renderPlot();
+</script>
+

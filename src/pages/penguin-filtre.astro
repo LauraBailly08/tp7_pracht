@@ -1,0 +1,105 @@
+﻿---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="3. Filtre Manchots • TP4">
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <!-- En-tete -->
+    <div class="bg-white/80 backdrop-blur-sm border border-pink-100 p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <div class="inline-block px-2.5 py-0.5 bg-pink-100/70 text-rose-800 text-xs font-semibold rounded-md mb-1 border border-pink-200">
+          Etape 3 • 1 Filtre
+        </div>
+        <h1 class="text-2xl font-bold text-slate-800">Manchots avec Filtre Espece</h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Filtrage dynamique pilote par un selecteur <code>&lt;select&gt;</code> HTML standard.
+        </p>
+      </div>
+      <div id="counter" class="badge badge-soft bg-rose-100 text-rose-800 border-rose-200 text-xs font-medium px-3 py-2">
+        Chargement...
+      </div>
+    </div>
+
+    <!-- Controle du filtre DaisyUI -->
+    <div class="card bg-white/90 border border-pink-100 shadow-xs rounded-2xl p-5">
+      <label for="species" class="block text-xs font-semibold text-slate-600 mb-1.5">
+        Choisir une espece de manchot :
+      </label>
+      <select
+        name="species"
+        id="species"
+        class="select select-bordered select-sm w-full max-w-xs bg-white border-pink-200 focus:border-rose-400 focus:outline-none rounded-xl"
+      >
+        <option value="">All species (Toutes les especes)</option>
+        <option value="Adelie">Adelie</option>
+        <option value="Chinstrap">Chinstrap</option>
+        <option value="Gentoo">Gentoo</option>
+      </select>
+    </div>
+
+    <!-- Zone d'affichage du graphique -->
+    <div class="card bg-white/90 border border-pink-100 shadow-xs rounded-2xl p-6 space-y-3">
+      <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span>
+        Graphique dynamique des manchots
+      </h2>
+      <div id="penguin-filter-plot" class="flex justify-center p-3 bg-pink-50/30 rounded-xl overflow-x-auto min-h-[360px] items-center"></div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import * as Plot from "@observablehq/plot";
+  import penguins from "../assets/penguins.json";
+
+  const selectSpecies = document.querySelector("#species") as HTMLSelectElement;
+  const plotDiv = document.querySelector("#penguin-filter-plot") as HTMLDivElement;
+  const counterSpan = document.querySelector("#counter") as HTMLDivElement;
+
+  function renderPlot() {
+    const species = selectSpecies.value;
+
+    const filteredPenguins = species
+      ? penguins.filter((p) => p.species === species)
+      : penguins;
+
+    if (counterSpan) {
+      counterSpan.textContent = `${filteredPenguins.length} manchots affiches sur ${penguins.length}`;
+    }
+
+    if (plotDiv) {
+      plotDiv.innerHTML = "";
+
+      const plot = Plot.plot({
+        title: species ? `Espece selectionnee : ${species}` : "Toutes les especes de manchots",
+        grid: true,
+        color: {
+          legend: true,
+          domain: ["Adelie", "Chinstrap", "Gentoo"],
+        },
+        x: {
+          label: "Longueur du bec (mm) ->",
+          domain: [30, 60],
+        },
+        y: {
+          label: "^ Profondeur du bec (mm)",
+          domain: [12, 23],
+        },
+        marks: [
+          Plot.dot(filteredPenguins, {
+            x: "culmen_length_mm",
+            y: "culmen_depth_mm",
+            stroke: "species",
+            tip: true,
+          }),
+        ],
+      });
+
+      plotDiv.append(plot);
+    }
+  }
+
+  selectSpecies.addEventListener("change", renderPlot);
+
+  renderPlot();
+</script>

@@ -1,0 +1,97 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import games from "../../../assets/games_3ds.json";
+import PlotFigure from "../../../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+
+// Génération statique des chemins (SSG)
+export async function getStaticPaths() {
+  const genresList = [...new Set(games.map((g) => g.genre))];
+  return genresList.map((genre) => ({
+    params: { genre },
+    props: {
+      genre,
+      filteredGames: games.filter((g) => g.genre === genre),
+      allGenres: genresList.sort(),
+    },
+  }));
+}
+
+const { genre } = Astro.params;
+const { filteredGames, allGenres } = Astro.props;
+
+// Configuration du graphique Plot
+const plotOptions = {
+  title: `Jeux 3DS du genre ${genre}`,
+  subtitle: `${filteredGames.length} jeu(x) répertorié(s)`,
+  grid: true,
+  color: {
+    legend: true,
+  },
+  x: {
+    label: "Score Metacritic (/100) →",
+    domain: [65, 96],
+  },
+  y: {
+    label: "↑ Ventes mondiales (Millions)",
+  },
+  marks: [
+    Plot.dot(filteredGames, {
+      x: "metacritic_score",
+      y: "global_sales_million",
+      stroke: "publisher",
+      fill: "publisher",
+      fillOpacity: 0.45,
+      r: 8,
+      title: (d: any) => `${d.title}\nÉditeur: ${d.publisher} (${d.release_year})\nVentes: ${d.global_sales_million}M\nMetacritic: ${d.metacritic_score}/100\nJoueurs: ${d.user_score}/10`,
+      tip: true,
+    }),
+  ],
+};
+---
+
+<Layout title={`Jeux ${genre} • SSG getStaticPaths`}>
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="bg-white/80 backdrop-blur-sm border border-pink-100 p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <a href="/consoles/genre" class="text-xs font-semibold text-sky-600 hover:text-rose-600 flex items-center gap-1 mb-1 transition">
+          ← Retour aux genres
+        </a>
+        <h1 class="text-2xl font-bold text-slate-800">Genre : {genre}</h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Page pré-rendue statiquement via <code>getStaticPaths()</code>.
+        </p>
+      </div>
+      <div class="badge badge-soft bg-pink-100 text-rose-800 border-pink-200 text-xs font-medium px-3 py-2">
+        {filteredGames.length} jeu(x)
+      </div>
+    </div>
+
+    <!-- Navigation rapide entre genres -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-4 flex flex-row flex-wrap items-center gap-2">
+      <span class="text-xs font-semibold text-slate-600 mr-2">Changer de genre :</span>
+      {
+        allGenres.map((g) => (
+          <a
+            href={`/consoles/genre/${encodeURIComponent(g)}`}
+            class={`btn btn-xs rounded-lg ${g === genre ? "bg-rose-500 text-white" : "bg-slate-50 text-slate-600 hover:bg-sky-50"}`}
+          >
+            {g}
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- Graphique PlotFigure -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-3">
+      <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-pink-400"></span>
+        Ventes mondiales vs Score Metacritic ({genre})
+      </h2>
+      <div class="bg-pink-50/20 p-4 rounded-xl flex justify-center items-center overflow-x-auto min-h-[350px]">
+        <PlotFigure options={plotOptions} />
+      </div>
+    </div>
+  </div>
+</Layout>
+

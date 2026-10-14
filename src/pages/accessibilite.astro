@@ -1,0 +1,119 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PlotFigure from "../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+
+// Exemple exact donné par l'enseignant pour la partie 0 (a11y)
+const teacherA11yOptions = {
+  title: "For charts, an informative title",
+  subtitle: "Subtitle to follow with additional context",
+  caption: "Figure 1. A chart with a title, subtitle, and caption.",
+  ariaLabel: "label sur le svg lui même",
+  marks: [
+    Plot.frame(),
+    Plot.text(
+      [
+        "Titles, subtitles, captions, and annotations assist interpretation by telling the reader what’s interesting. Don’t make the reader work to find what you already know."
+      ],
+      { lineWidth: 30, frameAnchor: "middle" }
+    )
+  ]
+};
+
+// Exemple 2 : Graphique accessible avec données réelles (Distribution des manchots)
+import penguins from "../assets/penguins.json";
+
+const accessiblePenguinsOptions = {
+  title: "Masse corporelle selon la longueur des nageoires",
+  subtitle: "Données issues de la station Palmer (344 manchots observés)",
+  caption: "Figure 2. Chaque point représente un manchot. La couleur distingue l'espèce.",
+  ariaLabel: "Nuage de points de la masse corporelle en fonction de la longueur des nageoires",
+  grid: true,
+  color: { legend: true },
+  marks: [
+    Plot.dot(penguins, {
+      x: "flipper_length_mm",
+      y: "body_mass_g",
+      stroke: "species",
+      tip: true,
+      title: (d) => `${d.species} (${d.island}) : ${d.body_mass_g}g, ${d.flipper_length_mm}mm`
+    })
+  ]
+};
+---
+
+<Layout title="0) Accessibilité (a11y) • TP Plot & Cartographie">
+  <div class="max-w-5xl mx-auto space-y-8 py-2">
+    <!-- En-tête -->
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-8 rounded-3xl shadow-xs space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100/80 border border-emerald-200 text-xs font-semibold text-emerald-800">
+        ♿ Partie 0 • Accessibilité (a11y) dans Observable Plot
+      </div>
+      <h1 class="text-3xl font-extrabold text-slate-800">
+        Accessibilité Web & Visualisations de Données
+      </h1>
+      <p class="text-slate-600 text-sm leading-relaxed max-w-3xl">
+        Conformément aux consignes, nous utilisons les options natives d'Observable Plot (<code>title</code>, <code>subtitle</code>, <code>caption</code>, <code>ariaLabel</code>) ainsi que les balises HTML sémantiques <code>&lt;figure&gt;</code> et <code>&lt;figcaption&gt;</code> pour garantir une navigation accessible à tous et aux lecteurs d'écran.
+      </p>
+    </div>
+
+    <!-- 1. Exemple du Sujet de TP -->
+    <section class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 sm:p-8 space-y-4">
+      <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <span>📐</span> Exemple officiel du sujet (Observable Plot native a11y)
+        </h2>
+        <span class="badge badge-outline text-xs">Exemple Prof</span>
+      </div>
+
+      <div class="p-4 bg-slate-50/80 rounded-2xl border border-slate-100">
+        <PlotFigure options={teacherA11yOptions} />
+      </div>
+
+      <div class="text-xs text-slate-500 bg-sky-50/60 p-3 rounded-xl border border-sky-100">
+        💡 <strong>Code utilisé :</strong> <code>Plot.plot(&#123; title: "...", subtitle: "...", caption: "...", ariaLabel: "...", marks: [...] &#125;)</code>. Observable Plot génère automatiquement un élément <code>&lt;figure&gt;</code> contenant <code>&lt;h2&gt;</code>, <code>&lt;h3&gt;</code>, le <code>&lt;svg aria-label="..."&gt;</code> et <code>&lt;figcaption&gt;</code>.
+      </div>
+    </section>
+
+    <!-- 2. Deuxième exemple avec figure / figcaption explicite -->
+    <section class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 sm:p-8 space-y-4">
+      <div class="border-b border-slate-100 pb-3 flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+          <span>🐧</span> Graphique réel avec balisage &lt;figure&gt; & &lt;figcaption&gt;
+        </h2>
+        <span class="badge badge-primary badge-outline text-xs">Palmer Penguins</span>
+      </div>
+
+      <div class="p-4 bg-slate-50/80 rounded-2xl border border-slate-100">
+        <PlotFigure options={accessiblePenguinsOptions} />
+      </div>
+    </section>
+
+    <!-- 3. Guide de Vérification Chrome DevTools (Lighthouse & Arborescence a11y) -->
+    <section class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 sm:p-8 space-y-4">
+      <h2 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+        <span>🔍</span> Outils de vérification Chrome DevTools recommandés par le cours
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-600">
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+          <h3 class="font-bold text-slate-800 flex items-center gap-1.5 text-sm">
+            <span>🛡️</span> Panneau Lighthouse
+          </h3>
+          <p>
+            Ouvrez les DevTools (<kbd class="kbd kbd-xs">F12</kbd>), rendez-vous dans l'onglet <strong>Lighthouse</strong>, cochez la catégorie <em>"Accessibilité"</em> puis lancez l'audit. Le score doit atteindre <strong>100%</strong> grâce aux contrastes de couleurs, aux rôles et aux libellés ARIA.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2">
+          <h3 class="font-bold text-slate-800 flex items-center gap-1.5 text-sm">
+            <span>🌳</span> Arborescence d'Accessibilité (a11y tree)
+          </h3>
+          <p>
+            Dans l'onglet <strong>Éléments</strong> des DevTools, activez le bouton <em>"Passer à la vue Arborescence de l'accessibilité"</em> (icône bonhomme). Inspectez le <code>&lt;svg&gt;</code> pour vérifier son nom accessible fourni par <code>aria-label</code>.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+

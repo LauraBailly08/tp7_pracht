@@ -1,0 +1,98 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import chairs from "../../../assets/chairs.json";
+import PlotFigure from "../../../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+
+// Génération statique des chemins (SSG)
+export async function getStaticPaths() {
+  const categoriesList = [...new Set(chairs.map((c) => c.category))];
+  return categoriesList.map((category) => ({
+    params: { category },
+    props: {
+      category,
+      filteredChairs: chairs.filter((c) => c.category === category),
+      allCategories: categoriesList.sort(),
+    },
+  }));
+}
+
+const { category } = Astro.params;
+const { filteredChairs, allCategories } = Astro.props;
+
+// Configuration du graphique Plot
+const plotOptions = {
+  title: `Chaises de catégorie ${category}`,
+  subtitle: `${filteredChairs.length} modèle(s) répertorié(s)`,
+  grid: true,
+  color: {
+    legend: true,
+  },
+  x: {
+    label: "Prix (€) →",
+    domain: [100, 1800],
+  },
+  y: {
+    label: "↑ Note client (/5)",
+    domain: [3.5, 5.0],
+  },
+  marks: [
+    Plot.dot(filteredChairs, {
+      x: "price",
+      y: "rating",
+      stroke: "material",
+      fill: "material",
+      fillOpacity: 0.4,
+      r: 8,
+      title: (d: any) => `${d.model} (${d.brand})\nPrix: ${d.price} €\nNote: ${d.rating}/5\nMatériau: ${d.material}`,
+      tip: true,
+    }),
+  ],
+};
+---
+
+<Layout title={`Chaises ${category} • SSG getStaticPaths`}>
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-6 rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <a href="/chaises/category" class="text-xs font-semibold text-sky-600 hover:text-rose-600 flex items-center gap-1 mb-1 transition">
+          ← Retour aux catégories
+        </a>
+        <h1 class="text-2xl font-bold text-slate-800">Catégorie : {category}</h1>
+        <p class="text-xs sm:text-sm text-slate-500">
+          Page pré-rendue statiquement via <code>getStaticPaths()</code>.
+        </p>
+      </div>
+      <div class="badge badge-soft bg-sky-100 text-sky-800 border-sky-200 text-xs font-medium px-3 py-2">
+        {filteredChairs.length} modèle(s)
+      </div>
+    </div>
+
+    <!-- Navigation rapide entre catégories -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-4 flex flex-row flex-wrap items-center gap-2">
+      <span class="text-xs font-semibold text-slate-600 mr-2">Changer de catégorie :</span>
+      {
+        allCategories.map((cat) => (
+          <a
+            href={`/chaises/category/${cat}`}
+            class={`btn btn-xs rounded-lg ${cat === category ? "bg-rose-500 text-white" : "bg-slate-50 text-slate-600 hover:bg-sky-50"}`}
+          >
+            {cat}
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- Graphique PlotFigure -->
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-3">
+      <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+        Prix vs Note des chaises ({category})
+      </h2>
+      <div class="bg-sky-50/40 p-4 rounded-xl flex justify-center items-center overflow-x-auto min-h-[350px]">
+        <PlotFigure options={plotOptions} />
+      </div>
+    </div>
+  </div>
+</Layout>
+

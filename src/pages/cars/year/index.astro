@@ -1,0 +1,40 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import cars from "../../../assets/cars.json";
+
+const years = [...new Set(cars.map((c) => c.year))].sort();
+---
+
+<Layout title="Voitures par Année • TD Routes Dynamiques">
+  <div class="space-y-6 max-w-5xl mx-auto">
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-6 rounded-2xl shadow-xs">
+      <div class="inline-block px-2.5 py-0.5 bg-sky-100 text-sky-800 text-xs font-semibold rounded-md mb-1 border border-sky-200">
+        TD • Routes Paramétriques
+      </div>
+      <h1 class="text-2xl font-bold text-slate-800">Dataset Voitures (Cars)</h1>
+      <p class="text-xs sm:text-sm text-slate-500 mt-1">
+        Sélectionnez une année pour ouvrir la route dynamique SSR correspondante <code>/cars/year/[year]</code>.
+      </p>
+    </div>
+
+    <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6">
+      <h2 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+        Années disponibles ({years.length}) :
+      </h2>
+
+      <div class="flex flex-wrap gap-2.5">
+        {
+          years.map((y) => (
+            <a
+              href={`/cars/year/${y}`}
+              class="btn btn-sm bg-sky-50 hover:bg-rose-100 hover:text-rose-800 border-sky-200 text-slate-700 rounded-xl transition"
+            >
+              Année {y}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</Layout>

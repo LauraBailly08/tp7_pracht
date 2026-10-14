@@ -1,0 +1,162 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Plan du site • Menu complet des TP & TD">
+  <div class="space-y-8 max-w-5xl mx-auto py-2">
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-8 rounded-3xl shadow-xs text-center space-y-2">
+      <span class="badge badge-soft bg-sky-100 text-sky-800 text-xs font-semibold px-3 py-1">
+        🧭 Navigation Complète
+      </span>
+      <h1 class="text-3xl font-extrabold text-slate-800">
+        Menu & Plan Interactif de Tous les Exercices
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto">
+        Accédez en un clic à l'ensemble des pages, routes dynamiques (SSG / SSR), onglets et filtres interactifs.
+      </p>
+    </div>
+
+    <!-- Grille des sections du TP -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      <!-- TP Cartographie & Accessibilité -->
+      <div class="card bg-white/95 border-2 border-indigo-200 shadow-sm rounded-3xl p-6 space-y-4 md:col-span-2">
+        <div class="flex items-center gap-3">
+          <span class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-2xl">
+            🗺️
+          </span>
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-bold uppercase tracking-wider">
+              TP Nouveau • Cartographie & Accessibilité
+            </div>
+            <h2 class="text-xl font-bold text-slate-800">0. Accessibilité, 1. Leaflet & 2. GéoJSON Plot</h2>
+            <p class="text-xs text-slate-500">Intégration d'Observable Plot avec Leaflet et projection GeoJSON</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
+          <ul class="menu bg-slate-50 rounded-xl p-2 space-y-1">
+            <li class="menu-title text-[10px] uppercase font-bold text-emerald-700">Partie 0 • a11y</li>
+            <li><a href="/accessibilite" class="text-xs font-semibold text-slate-700 hover:bg-emerald-100 rounded-lg">♿ 0. Page Accessibilité Démo</a></li>
+          </ul>
+
+          <ul class="menu bg-slate-50 rounded-xl p-2 space-y-1">
+            <li class="menu-title text-[10px] uppercase font-bold text-blue-700">Partie 1 • Leaflet</li>
+            <li><a href="/leaflet" class="text-xs font-semibold text-slate-700 hover:bg-blue-100 rounded-lg">🗺️ 1. Carte Leaflet (2500+ Établissements)</a></li>
+          </ul>
+
+          <ul class="menu bg-slate-50 rounded-xl p-2 space-y-1">
+            <li class="menu-title text-[10px] uppercase font-bold text-purple-700">Partie 2 • GéoJSON</li>
+            <li><a href="/geojson-plot" class="text-xs font-semibold text-purple-800 hover:bg-purple-100 rounded-lg">🌍 2. Carte Client (3 SELECT réactifs)</a></li>
+            <li><a href="/geojson-plot-ssr" class="text-xs font-medium text-slate-600 hover:bg-purple-50 rounded-lg">🖥️ 2bis. Carte Serveur (SSG / SSR)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 1. TD / TP Manchots -->
+      <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-4">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-lg">
+            🐧
+          </span>
+          <div>
+            <h2 class="text-lg font-bold text-slate-800">1. Manchots (Palmer Penguins)</h2>
+            <p class="text-xs text-slate-500">Exercices principaux et routes SSG</p>
+          </div>
+        </div>
+
+        <ul class="menu bg-slate-50 rounded-xl p-2 space-y-1">
+          <li><a href="/penguins" class="text-xs font-semibold text-sky-800 hover:bg-sky-100 rounded-lg">📑 Page avec Onglets & Boucle map</a></li>
+          <li><a href="/penguins/specie" class="text-xs font-medium text-slate-700 hover:bg-sky-100 rounded-lg">🧬 Par Espèce (SSG <code>/penguins/specie/[species]</code>)</a></li>
+          <li><a href="/penguins/island" class="text-xs font-medium text-slate-700 hover:bg-sky-100 rounded-lg">🏝️ Par Île (SSG <code>/penguins/island/[island]</code>)</a></li>
+          <li><a href="/penguins/sex" class="text-xs font-medium text-slate-700 hover:bg-sky-100 rounded-lg">⚧️ Par Sexe (SSG <code>/penguins/sex/[sex]</code>)</a></li>
+          <li><a href="/penguin-filtre" class="text-xs font-medium text-slate-700 hover:bg-rose-100 rounded-lg">🔍 Filtre Espèce Interactif (Client)</a></li>
+          <li><a href="/penguin-multi-filtres" class="text-xs font-medium text-slate-700 hover:bg-rose-100 rounded-lg">🎛️ Multi-Filtres & Séries (Client)</a></li>
+          <li><a href="/simple-penguin" class="text-xs font-medium text-slate-500 hover:bg-slate-200 rounded-lg">🧪 Simple Penguin de base</a></li>
+        </ul>
+      </div>
+
+      <!-- 2. TD Voitures (SSR) -->
+      <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-4">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-lg">
+            🚗
+          </span>
+          <div>
+            <h2 class="text-lg font-bold text-slate-800">2. Voitures (Cars Dataset)</h2>
+            <p class="text-xs text-slate-500">Routes dynamiques SSR avec prerender = false</p>
+          </div>
+        </div>
+
+        <ul class="menu bg-slate-50 rounded-xl p-2 space-y-1">
+          <li><a href="/cars/year" class="text-xs font-semibold text-sky-800 hover:bg-sky-100 rounded-lg">📅 Index des Années disponibles</a></li>
+          <li><a href="/cars/year/1970" class="text-xs font-medium text-slate-700 hover:bg-sky-100 rounded-lg">🚗 Année 1970 (Exemple SSR)</a></li>
+          <li><a href="/cars/year/1975" class="text-xs font-medium text-slate-700 hover:bg-sky-100 rounded-lg">🚗 Année 1975 (Exemple SSR)</a></li>
+          <li><a href="/cars/year/1982" class="text-xs font-medium text-slate-700 hover:bg-sky-100 rounded-lg">🚗 Année 1982 (Exemple SSR)</a></li>
+        </ul>
+      </div>
+
+      <!-- 3. Dataset Chaises de bureau -->
+      <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-4">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-pink-100 text-rose-700 flex items-center justify-center font-bold text-lg">
+            🪑
+          </span>
+          <div>
+            <h2 class="text-lg font-bold text-slate-800">3. Chaises de Bureau</h2>
+            <p class="text-xs text-slate-500">Routes SSG & Filtre interactif</p>
+          </div>
+        </div>
+
+        <ul class="menu bg-slate-50 rounded-xl p-2 space-y-1">
+          <li><a href="/chaises/category" class="text-xs font-semibold text-rose-800 hover:bg-rose-100 rounded-lg">📁 Par Catégorie (SSG <code>getStaticPaths</code>)</a></li>
+          <li><a href="/dataset-chaises" class="text-xs font-medium text-slate-700 hover:bg-rose-100 rounded-lg">🎛️ Filtre interactif Catégorie & Matériau (Client)</a></li>
+        </ul>
+      </div>
+
+      <!-- 4. Dataset Consoles 3DS -->
+      <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-4">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-pink-100 text-rose-700 flex items-center justify-center font-bold text-lg">
+            🎮
+          </span>
+          <div>
+            <h2 class="text-lg font-bold text-slate-800">4. Consoles & Jeux 3DS</h2>
+            <p class="text-xs text-slate-500">Routes SSG & Filtre interactif</p>
+          </div>
+        </div>
+
+        <ul class="menu bg-slate-50 rounded-xl p-2 space-y-1">
+          <li><a href="/consoles/genre" class="text-xs font-semibold text-rose-800 hover:bg-rose-100 rounded-lg">📁 Par Genre de jeu (SSG <code>getStaticPaths</code>)</a></li>
+          <li><a href="/dataset-consoles-3ds" class="text-xs font-medium text-slate-700 hover:bg-rose-100 rounded-lg">🎛️ Filtre interactif Genre & Éditeur (Client)</a></li>
+        </ul>
+      </div>
+
+      <!-- 5. Dataset Cinéma Box-Office -->
+      <div class="card bg-white/90 border border-sky-100 shadow-xs rounded-2xl p-6 space-y-4 md:col-span-2">
+        <div class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg">
+            🎬
+          </span>
+          <div>
+            <h2 class="text-lg font-bold text-slate-800">5. Cinéma & Box-Office Mondial (Nouveau Dataset)</h2>
+            <p class="text-xs text-slate-500">Budget, recettes mondiales et scores Rotten Tomatoes</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <ul class="menu bg-slate-50 rounded-xl p-2 space-y-1">
+            <li><a href="/movies/genre" class="text-xs font-semibold text-purple-800 hover:bg-purple-100 rounded-lg">📁 Par Genre de film (SSG <code>getStaticPaths</code>)</a></li>
+            <li><a href="/dataset-movies" class="text-xs font-medium text-slate-700 hover:bg-purple-100 rounded-lg">🎛️ Filtre Box-Office Genre & Décennie (Client)</a></li>
+          </ul>
+          <ul class="menu bg-slate-50 rounded-xl p-2 space-y-1">
+            <li><a href="/simple" class="text-xs font-semibold text-slate-600 hover:bg-slate-200 rounded-lg">🧪 Étape 1 : Graphique Simple Observable Plot</a></li>
+            <li><a href="/" class="text-xs font-semibold text-slate-600 hover:bg-slate-200 rounded-lg">🏠 Page d'Accueil Principale</a></li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</Layout>
+

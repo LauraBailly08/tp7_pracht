@@ -1,0 +1,73 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PlotFigure from "../components/PlotFigure.astro";
+import * as Plot from "@observablehq/plot";
+import departements from "../assets/departements.geojson.json";
+import populationMain from "../assets/populationMain.json";
+
+// Exemple côté serveur : rendu statique SSG / SSR pour l'année 2023, Ensemble, Tous âges
+const filtered = populationMain.filter(
+  (d) => d.Période === 2023 && d.Sex === "Ensemble" && d.Age === "Tous âges"
+);
+
+const popMap = new Map(
+  filtered.map((d) => [String(d.dep || d.code).padStart(2, "0"), Number(d.Valeur)])
+);
+
+const plotOptions = {
+  title: "Population par département en France (2023)",
+  subtitle: "Rendu Côté Serveur (Astro SSG / SSR)",
+  caption: "Figure GeoJSON/Plot SSR. Population totale (Tous âges, Ensemble des sexes). Source INSEE.",
+  ariaLabel: "Carte de France choroplèthe de la population par département en 2023 générée côté serveur",
+  width: 750,
+  height: 600,
+  projection: {
+    type: "mercator",
+    domain: departements
+  },
+  color: {
+    type: "quantile",
+    n: 7,
+    scheme: "Purples",
+    label: "Population (habitants)",
+    legend: true
+  },
+  marks: [
+    Plot.geo(departements, {
+      fill: (d: any) => popMap.get(d.properties.code) || 0,
+      stroke: "#ffffff",
+      strokeWidth: 0.6,
+      title: (d: any) =>
+        `${d.properties.nom} (${d.properties.code}) : ${(popMap.get(d.properties.code) || 0).toLocaleString("fr-FR")} hab.`
+    })
+  ]
+};
+---
+
+<Layout title="2) Carte GéoJSON (Côté Serveur SSG / SSR) • Observable Plot">
+  <div class="max-w-5xl mx-auto space-y-6 py-2">
+    <!-- En-tête -->
+    <div class="bg-white/80 backdrop-blur-sm border border-sky-100 p-8 rounded-3xl shadow-xs space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-100/80 border border-indigo-200 text-xs font-semibold text-indigo-800">
+        🖥️ Partie 2 (Variante) • Rendu Côté Serveur
+      </div>
+      <h1 class="text-3xl font-extrabold text-slate-800">
+        GéoJSON / Plot Rendu Côté Serveur (Astro)
+      </h1>
+      <p class="text-slate-600 text-sm leading-relaxed max-w-3xl">
+        Cet exemple illustre le code initial exécuté <strong>côté serveur</strong> dans le frontmatter Astro avec JSDOM, produisant un SVG statique ultra-rapide avant son adaptation dynamique côté client.
+      </p>
+      <div class="pt-2">
+        <a href="/geojson-plot" class="btn btn-sm btn-primary rounded-xl text-xs">
+          👉 Voir la version interactive Côté Client (avec 3 SELECT)
+        </a>
+      </div>
+    </div>
+
+    <!-- Graphique Côté Serveur -->
+    <div class="card bg-white border border-sky-100 shadow-sm rounded-3xl p-6">
+      <PlotFigure options={plotOptions} />
+    </div>
+  </div>
+</Layout>
+
